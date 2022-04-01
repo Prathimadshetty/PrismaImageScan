@@ -1,7 +1,8 @@
 on: [ push, workflow_dispatch ]
 
 env:
-  IMAGE_NAME: ${{ github.repository }}:${{ github.sha }}
+  #IMAGE_NAME: ${{ github.repository }}:${{ github.sha }}
+  IMAGE_NAME: test-image
 
 jobs:
   build-and-scan:
@@ -13,15 +14,18 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build the image
-        run: docker build -t $IMAGE_NAME .
-
+        #docker build -f Dockerfile -t myimage
+        run: docker build -f ./images/Dockerfile -t test-image .
+        #run: docker build --no-cache -t test-image:0.1 .
+                  
       - name: Prisma Cloud image scan
         id: scan
-        uses: PaloAltoNetworks/prisma-cloud-scan@v1
+        uses: Prathimadshetty/PrismaImageScan@v1
         with:
           pcc_console_url: ${{ secrets.PCC_CONSOLE_URL }}
           pcc_user: ${{ secrets.PCC_USER }}
           pcc_pass: ${{ secrets.PCC_PASS }}
+          #image_name: 24643989eba4
           image_name: ${{ env.IMAGE_NAME }}
 
       # (Optional) for compatibility with GitHub's code scanning alerts
@@ -29,4 +33,5 @@ jobs:
         if: ${{ always() }} # necessary if using failure thresholds in the image scan
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif_file }}
+          #sarif_file: ${{ steps.scan.outputs.sarif_file }}
+          sarif_file: results.sarif
