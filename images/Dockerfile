@@ -192,7 +192,6 @@ CMD echo 'Vulnerable image' && /bin/false
 
 # Basic labels.
 # http://label-schema.org/
-#
 LABEL \
     org.label-schema.name="bad-dockerfile" \
     org.label-schema.description="Reference Dockerfile containing software with known vulnerabilities." \
